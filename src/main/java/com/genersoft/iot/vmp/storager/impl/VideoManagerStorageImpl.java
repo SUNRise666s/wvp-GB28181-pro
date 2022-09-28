@@ -58,7 +58,7 @@ public class VideoManagerStorageImpl implements IVideoManagerStorage {
 	DataSourceTransactionManager dataSourceTransactionManager;
 
 	@Autowired
-    private DeviceMapper deviceMapper;
+	private DeviceMapper deviceMapper;
 
 	@Autowired
 	private DeviceChannelMapper deviceChannelMapper;
@@ -67,37 +67,37 @@ public class VideoManagerStorageImpl implements IVideoManagerStorage {
 	private DeviceMobilePositionMapper deviceMobilePositionMapper;
 
 	@Autowired
-    private ParentPlatformMapper platformMapper;
+	private ParentPlatformMapper platformMapper;
 
 	@Autowired
-    private IRedisCatchStorage redisCatchStorage;
+	private IRedisCatchStorage redisCatchStorage;
 
 	@Autowired
-    private PlatformChannelMapper platformChannelMapper;
+	private PlatformChannelMapper platformChannelMapper;
 
 	@Autowired
-    private StreamProxyMapper streamProxyMapper;
+	private StreamProxyMapper streamProxyMapper;
 
 	@Autowired
-    private StreamPushMapper streamPushMapper;
+	private StreamPushMapper streamPushMapper;
 
 	@Autowired
-    private GbStreamMapper gbStreamMapper;
+	private GbStreamMapper gbStreamMapper;
 
 	@Autowired
-    private UserSetting userSetting;
+	private UserSetting userSetting;
 
 	@Autowired
-    private PlatformCatalogMapper catalogMapper;
+	private PlatformCatalogMapper catalogMapper;
 
 	@Autowired
-    private PlatformGbStreamMapper platformGbStreamMapper;
+	private PlatformGbStreamMapper platformGbStreamMapper;
 
 	@Autowired
-    private IGbStreamService gbStreamService;
+	private IGbStreamService gbStreamService;
 
 	@Autowired
-    private ParentPlatformMapper parentPlatformMapper;
+	private ParentPlatformMapper parentPlatformMapper;
 
 	/**
 	 * 根据设备ID判断设备是否存在
@@ -949,5 +949,11 @@ public class VideoManagerStorageImpl implements IVideoManagerStorage {
 	@Override
 	public List<DeviceChannel> queryChannelWithCatalog(String serverGBId) {
 		return deviceChannelMapper.queryChannelWithCatalog(serverGBId);
+	}
+
+	@Override
+	public List<Device> querydeviceOnline()
+	{
+		return deviceMapper.getOnlineDevicesChannel();
 	}
 }

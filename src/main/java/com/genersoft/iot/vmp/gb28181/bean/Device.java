@@ -21,19 +21,19 @@ public class Device {
 	 */
 	@Schema(description = "名称")
 	private String name;
-	
+
 	/**
 	 * 生产厂商
 	 */
 	@Schema(description = "生产厂商")
 	private String manufacturer;
-	
+
 	/**
 	 * 型号
 	 */
 	@Schema(description = "型号")
 	private String model;
-	
+
 	/**
 	 * 固件版本
 	 */
@@ -73,7 +73,7 @@ public class Device {
 	 */
 	@Schema(description = "wan地址")
 	private String  hostAddress;
-	
+
 	/**
 	 * 在线
 	 */
@@ -171,6 +171,9 @@ public class Device {
 	 */
 	@Schema(description = "树类型 国标规定了两种树的展现方式 行政区划：CivilCode 和业务分组:BusinessGroup")
 	private String treeType;
+
+	@Schema(description = "通道id:ChannelId")
+	private String channelId;
 
 
 	public String getDeviceId() {
@@ -381,4 +384,9 @@ public class Device {
 		this.treeType = treeType;
 	}
 
+	public void setChannelId(String channelId){this.channelId = channelId;}
+
+	public String getChannelId() {
+		return channelId;
+	}
 }

@@ -251,6 +251,7 @@
 				<version>2.3.5.RELEASE</version>
 				<configuration>
 					<includeSystemScope>true</includeSystemScope>
+					<fork>false</fork>
 				</configuration>
 			</plugin>
 			<plugin>

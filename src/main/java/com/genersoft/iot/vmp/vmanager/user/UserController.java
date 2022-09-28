@@ -60,6 +60,14 @@ public class UserController {
         return user;
     }
 
+    @GetMapping("/curUser")
+    @Operation(summary = "获取当前用户信息")
+    public LoginUser GetCurUser()
+    {
+        LoginUser user = SecurityUtils.getUserInfo();
+        return  user;
+    }
+
     @PostMapping("/changePassword")
     @Operation(summary = "修改密码")
     @Parameter(name = "username", description = "用户名", required = true)
@@ -95,8 +103,8 @@ public class UserController {
     @Parameter(name = "password", description = "密码（未md5加密的密码）", required = true)
     @Parameter(name = "roleId", description = "角色ID", required = true)
     public void add(@RequestParam String username,
-                                                 @RequestParam String password,
-                                                 @RequestParam Integer roleId){
+                    @RequestParam String password,
+                    @RequestParam Integer roleId){
         if (ObjectUtils.isEmpty(username) || ObjectUtils.isEmpty(password) || roleId == null) {
             throw new ControllerException(ErrorCode.ERROR400.getCode(), "参数不可为空");
         }

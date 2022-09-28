@@ -45,6 +45,7 @@ import java.io.*;
 import java.nio.file.Files;
 import java.text.ParseException;
 import java.util.*;
+import java.util.stream.Collectors;
 
 @Tag(name  = "国标设备查询", description = "国标设备查询")
 @SuppressWarnings("rawtypes")
@@ -52,9 +53,9 @@ import java.util.*;
 @RestController
 @RequestMapping("/api/device/query")
 public class DeviceQuery {
-	
+
 	private final static Logger logger = LoggerFactory.getLogger(DeviceQuery.class);
-	
+
 	@Autowired
 	private IVideoManagerStorage storager;
 
@@ -63,10 +64,10 @@ public class DeviceQuery {
 
 	@Autowired
 	private IRedisCatchStorage redisCatchStorage;
-	
+
 	@Autowired
 	private SIPCommander cmder;
-	
+
 	@Autowired
 	private DeferredResultHolder resultHolder;
 
@@ -88,7 +89,7 @@ public class DeviceQuery {
 	@Parameter(name = "deviceId", description = "设备国标编号", required = true)
 	@GetMapping("/devices/{deviceId}")
 	public Device devices(@PathVariable String deviceId){
-		
+
 		return storager.queryVideoDevice(deviceId);
 	}
 
@@ -103,7 +104,7 @@ public class DeviceQuery {
 	@Parameter(name = "count", description = "每页查询数量", required = true)
 	@GetMapping("/devices")
 	public PageInfo<Device> devices(int page, int count){
-		
+
 		return storager.queryVideoDeviceList(page, count);
 	}
 
@@ -129,11 +130,11 @@ public class DeviceQuery {
 	@Parameter(name = "channelType", description = "设备/子目录-> false/true")
 	@Parameter(name = "catalogUnderDevice", description = "是否直属与设备的目录")
 	public PageInfo channels(@PathVariable String deviceId,
-											   int page, int count,
-											   @RequestParam(required = false) String query,
-											   @RequestParam(required = false) Boolean online,
-											   @RequestParam(required = false) Boolean channelType,
-											   @RequestParam(required = false) Boolean catalogUnderDevice) {
+							 int page, int count,
+							 @RequestParam(required = false) String query,
+							 @RequestParam(required = false) Boolean online,
+							 @RequestParam(required = false) Boolean channelType,
+							 @RequestParam(required = false) Boolean catalogUnderDevice) {
 		if (ObjectUtils.isEmpty(query)) {
 			query = null;
 		}
@@ -150,7 +151,7 @@ public class DeviceQuery {
 	@Parameter(name = "deviceId", description = "设备国标编号", required = true)
 	@PostMapping("/devices/{deviceId}/sync")
 	public WVPResult<SyncStatus> devicesSync(@PathVariable String deviceId){
-		
+
 		if (logger.isDebugEnabled()) {
 			logger.debug("设备通道信息同步API调用，deviceId：" + deviceId);
 		}
@@ -178,7 +179,7 @@ public class DeviceQuery {
 	@Parameter(name = "deviceId", description = "设备国标编号", required = true)
 	@DeleteMapping("/devices/{deviceId}/delete")
 	public String delete(@PathVariable String deviceId){
-		
+
 		if (logger.isDebugEnabled()) {
 			logger.debug("设备信息删除API调用，deviceId：" + deviceId);
 		}
@@ -229,12 +230,12 @@ public class DeviceQuery {
 	@Parameter(name = "channelType", description = "设备/子目录-> false/true")
 	@GetMapping("/sub_channels/{deviceId}/{channelId}/channels")
 	public ResponseEntity<PageInfo> subChannels(@PathVariable String deviceId,
-												  @PathVariable String channelId,
-												  int page,
-												  int count,
-												  @RequestParam(required = false) String query,
-												  @RequestParam(required = false) Boolean online,
-												  @RequestParam(required = false) Boolean channelType){
+												@PathVariable String channelId,
+												int page,
+												int count,
+												@RequestParam(required = false) String query,
+												@RequestParam(required = false) Boolean online,
+												@RequestParam(required = false) Boolean channelType){
 
 		DeviceChannel deviceChannel = storager.queryChannel(deviceId,channelId);
 		if (deviceChannel == null) {
@@ -300,7 +301,7 @@ public class DeviceQuery {
 
 	/**
 	 * 设备状态查询请求API接口
-	 * 
+	 *
 	 * @param deviceId 设备id
 	 */
 	@Operation(summary = "设备状态查询")
@@ -364,12 +365,12 @@ public class DeviceQuery {
 	@Parameter(name = "endTime", description = "报警发生终止时间")
 	@GetMapping("/alarm/{deviceId}")
 	public DeferredResult<ResponseEntity<String>> alarmApi(@PathVariable String deviceId,
-														@RequestParam(required = false) String startPriority, 
-														@RequestParam(required = false) String endPriority, 
-														@RequestParam(required = false) String alarmMethod,
-														@RequestParam(required = false) String alarmType,
-														@RequestParam(required = false) String startTime,
-														@RequestParam(required = false) String endTime) {
+														   @RequestParam(required = false) String startPriority,
+														   @RequestParam(required = false) String endPriority,
+														   @RequestParam(required = false) String alarmMethod,
+														   @RequestParam(required = false) String alarmType,
+														   @RequestParam(required = false) String startTime,
+														   @RequestParam(required = false) String endTime) {
 		if (logger.isDebugEnabled()) {
 			logger.debug("设备报警查询API调用");
 		}
@@ -550,5 +551,37 @@ public class DeviceQuery {
 		pageInfo.setList(trees);
 
 		return new ResponseEntity<>(pageInfo,HttpStatus.OK);
+	}
+	@Operation(summary = "查询国标设备在线列表")
+	@GetMapping("/devices-online")
+	public List<Device> onlinedevice(){
+		return storager.querydeviceOnline();
+	}
+
+	/**
+	 * 大屏分组
+	 * @param count 分屏数
+	 * @return
+	 */
+	@Operation(summary = "查询国标设备在线列表")
+	@GetMapping("/online-screen")
+	@Parameter(name = "count", description = "每页条数", required = true)
+	public List<List<Device>> onlinescreen(int count){
+		List<Device> data = storager.querydeviceOnline();
+		List<List<Device>> res = new ArrayList<>();;
+		while (true)
+		{
+			if(data.size()>count)
+			{
+				res.add(data.subList(0,count));
+				data = data.stream().skip(count).collect(Collectors.toList());
+			}
+			else
+			{
+				res.add(data);
+				break;
+			}
+		}
+		return  res;
 	}
 }
