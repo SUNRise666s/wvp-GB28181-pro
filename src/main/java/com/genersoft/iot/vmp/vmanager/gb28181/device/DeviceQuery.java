@@ -3,10 +3,7 @@ package com.genersoft.iot.vmp.vmanager.gb28181.device;
 import com.alibaba.fastjson.JSONObject;
 import com.genersoft.iot.vmp.conf.DynamicTask;
 import com.genersoft.iot.vmp.conf.exception.ControllerException;
-import com.genersoft.iot.vmp.gb28181.bean.Device;
-import com.genersoft.iot.vmp.gb28181.bean.DeviceChannel;
-import com.genersoft.iot.vmp.gb28181.bean.SubscribeHolder;
-import com.genersoft.iot.vmp.gb28181.bean.SyncStatus;
+import com.genersoft.iot.vmp.gb28181.bean.*;
 import com.genersoft.iot.vmp.gb28181.task.ISubscribeTask;
 import com.genersoft.iot.vmp.gb28181.task.impl.CatalogSubscribeTask;
 import com.genersoft.iot.vmp.gb28181.task.impl.MobilePositionSubscribeTask;
@@ -583,5 +580,27 @@ public class DeviceQuery {
 			}
 		}
 		return  res;
+	}
+
+	@Operation(summary = "获取播放列表")
+	@GetMapping("/setting-screen")
+	@Parameter(name = "count",description = "每页条数",required = true)
+	public List<List<Screen>> settingScreen(int count){
+		List<Screen> data = storager.queryScreen();
+		List<List<Screen>> res = new ArrayList<>();
+		while (true)
+		{
+			if(data.size()>count)
+			{
+				res.add(data.subList(0,count));
+				data = data.stream().skip(count).collect(Collectors.toList());
+			}
+			else
+			{
+				res.add(data);
+				break;
+			}
+		}
+		return res;
 	}
 }

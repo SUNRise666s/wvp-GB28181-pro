@@ -399,4 +399,6 @@ public interface IVideoManagerStorage {
 	List<DeviceChannel> queryChannelWithCatalog(String serverGBId);
 
 	List<Device> querydeviceOnline();
+
+	List<Screen> queryScreen();
 }

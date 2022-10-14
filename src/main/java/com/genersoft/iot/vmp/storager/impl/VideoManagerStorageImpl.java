@@ -99,6 +99,9 @@ public class VideoManagerStorageImpl implements IVideoManagerStorage {
 	@Autowired
 	private ParentPlatformMapper parentPlatformMapper;
 
+	@Autowired
+	private  ScreenMapper screenMapper;
+
 	/**
 	 * 根据设备ID判断设备是否存在
 	 *
@@ -955,5 +958,11 @@ public class VideoManagerStorageImpl implements IVideoManagerStorage {
 	public List<Device> querydeviceOnline()
 	{
 		return deviceMapper.getOnlineDevicesChannel();
+	}
+
+	@Override
+	public List<Screen> queryScreen()
+	{
+		return screenMapper.getScreen();
 	}
 }
