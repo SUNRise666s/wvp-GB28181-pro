@@ -18,13 +18,14 @@ public interface IDeviceAlarmService {
      * @param alarmPriority  报警级别, 1为一级警情, 2为二级警情, 3为三级警情, 4为四级 警情-
      * @param alarmMethod 报警方式 , 1为电话报警, 2为设备报警, 3为短信报警, 4为 GPS报警, 5为视频报警, 6为设备故障报警,
      * 	                            7其他报警;可以为直接组合如12为电话报警或 设备报警-
+     * @param state 报警状态
      * @param alarmType 报警类型
      * @param startTime 开始时间
      * @param endTime 结束时间
      * @return 报警列表
      */
     PageInfo<DeviceAlarm> getAllAlarm(int page, int count, String deviceId, String alarmPriority, String alarmMethod,
-                                      String alarmType, String startTime, String endTime);
+                                      String alarmType,String state, String startTime, String endTime);
 
     /**
      * 添加一个报警
@@ -39,5 +40,12 @@ public interface IDeviceAlarmService {
      * @param time 不写时间则清空所有时间的
      */
     int clearAlarmBeforeTime(Integer id, List<String> deviceIdList, String time);
+
+    /**
+     * 更新报警状态
+     * @param id 报警id
+     * @return 报警列表
+     */
+    int updateAlarmSate(int id);
 
 }

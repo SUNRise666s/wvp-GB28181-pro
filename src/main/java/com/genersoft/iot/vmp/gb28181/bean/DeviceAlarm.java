@@ -96,6 +96,9 @@ public class DeviceAlarm {
 	@Schema(description = "创建时间")
 	private String createTime;
 
+	@Schema(description = "数据状态")
+	private String state;
+
 
 	public String getId() {
 		return id;
@@ -184,4 +187,8 @@ public class DeviceAlarm {
 	public void setCreateTime(String createTime) {
 		this.createTime = createTime;
 	}
+
+	public String getState()	{return state;}
+
+	public void setState(String state)	{this.state = state;}
 }

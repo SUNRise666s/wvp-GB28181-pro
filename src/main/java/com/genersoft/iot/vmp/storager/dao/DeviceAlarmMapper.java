@@ -27,13 +27,13 @@ public interface DeviceAlarmMapper {
             " <if test=\"alarmPriority != null\" >  AND alarmPriority = '${alarmPriority}' </if>" +
             " <if test=\"alarmMethod != null\" >  AND alarmMethod = '${alarmMethod}' </if>" +
             " <if test=\"alarmType != null\" >  AND alarmType = '${alarmType}' </if>" +
+            " <if test=\"state != null\" >  AND state = '${state}' </if>" +
             " <if test=\"startTime != null\" >  AND alarmTime &gt;= '${startTime}' </if>" +
             " <if test=\"endTime != null\" >  AND alarmTime &lt;= '${endTime}' </if>" +
             " ORDER BY alarmTime ASC " +
             " </script>"})
     List<DeviceAlarm> query(String deviceId, String alarmPriority, String alarmMethod,
-                            String alarmType, String startTime, String endTime);
-
+                            String alarmType,String state, String startTime, String endTime);
 
     @Delete(" <script>" +
             "DELETE FROM device_alarm WHERE 1=1 " +
@@ -45,4 +45,11 @@ public interface DeviceAlarmMapper {
             " </script>"
             )
     int clearAlarmBeforeTime(Integer id, List<String> deviceIdList, String time);
+
+    @Update(value = {" <script>" +
+            "UPDATE device_alarm " +
+            "SET state= '1'" +
+            "WHERE id='${id}'"+
+            " </script>"})
+    int updatealarm(int id);
 }

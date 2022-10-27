@@ -144,6 +144,7 @@ public class AlarmController {
      * @param alarmPriority  报警级别
      * @param alarmMethod 报警方式
      * @param alarmType  报警类型
+     * @param state  报警状态
      * @param startTime  开始时间
      * @param endTime 结束时间
      * @return
@@ -155,6 +156,7 @@ public class AlarmController {
     @Parameter(name = "alarmPriority",description = "查询内容")
     @Parameter(name = "alarmMethod",description = "查询内容")
     @Parameter(name = "alarmType",description = "每页查询数量")
+    @Parameter(name = "state",description = "状态")
     @Parameter(name = "startTime",description = "开始时间")
     @Parameter(name = "endTime",description = "结束时间")
     @GetMapping("/all")
@@ -165,6 +167,7 @@ public class AlarmController {
             @RequestParam(required = false) String alarmPriority,
             @RequestParam(required = false) String alarmMethod,
             @RequestParam(required = false) String alarmType,
+            @RequestParam(required = false) String state,
             @RequestParam(required = false) String startTime,
             @RequestParam(required = false) String endTime
     ) {
@@ -176,6 +179,9 @@ public class AlarmController {
         }
         if (ObjectUtils.isEmpty(alarmType)) {
             alarmType = null;
+        }
+        if (ObjectUtils.isEmpty(state)) {
+            state = "0";
         }
         if (ObjectUtils.isEmpty(startTime)) {
             startTime = null;
@@ -190,6 +196,21 @@ public class AlarmController {
         }
 
         return deviceAlarmService.getAllAlarm(page, count, deviceId, alarmPriority, alarmMethod,
-                alarmType, startTime, endTime);
+                alarmType,state, startTime, endTime);
+    }
+
+    /**
+     *  分页查询待处理报警
+     *
+     * @param id 结束时间
+     * @return
+     */
+    @Operation(summary = "分页查询待处理报警")
+    @Parameter(name = "id",description = "报警id",required = true)
+    @PostMapping("/updateState")
+    public int setAlarmState(
+            @RequestParam int id
+    ) {
+        return deviceAlarmService.updateAlarmSate(id);
     }
 }

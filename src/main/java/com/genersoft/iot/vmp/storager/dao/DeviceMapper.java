@@ -111,6 +111,6 @@ public interface DeviceMapper {
     @Select("SELECT * FROM device WHERE ip = #{host} AND port=${port}")
     Device getDeviceByHostAndPort(String host, int port);
 
-    @Select("select a.*,b.channelId from device a INNER JOIN device_channel b on a.deviceId = b.deviceId and a.`online`  = 1")
+    @Select("select a.*,b.channelId from device a INNER JOIN device_channel b on a.deviceId = b.deviceId and a.`online`  = 1 where a.transport = 'TCP' order by a.deviceId")
     List<Device> getOnlineDevicesChannel();
 }
