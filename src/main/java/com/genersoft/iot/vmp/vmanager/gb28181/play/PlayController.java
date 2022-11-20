@@ -4,6 +4,7 @@ import com.alibaba.fastjson.JSONArray;
 import com.genersoft.iot.vmp.common.StreamInfo;
 import com.genersoft.iot.vmp.conf.exception.ControllerException;
 import com.genersoft.iot.vmp.conf.exception.SsrcTransactionNotFoundException;
+import com.genersoft.iot.vmp.gb28181.bean.RecordInfo;
 import com.genersoft.iot.vmp.gb28181.bean.SsrcTransaction;
 import com.genersoft.iot.vmp.gb28181.session.VideoStreamSessionManager;
 import com.genersoft.iot.vmp.gb28181.bean.Device;
@@ -25,6 +26,7 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -39,6 +41,7 @@ import org.springframework.web.context.request.async.DeferredResult;
 
 import javax.sip.InvalidArgumentException;
 import javax.sip.SipException;
+import java.io.IOException;
 import java.text.ParseException;
 import java.util.List;
 import java.util.UUID;
@@ -294,5 +297,41 @@ public class PlayController {
 		return jsonObject;
 	}
 
+	@GetMapping("/cameraVoice/{deviceId}/{channelId}")
+	public DeferredResult<ResponseEntity<RecordInfo>> cameraVoice(@PathVariable String deviceId, @PathVariable String channelId){
+
+		if (logger.isDebugEnabled()) {
+			logger.debug(String.format("打开摄像头语音 API调用，deviceId：%s ",deviceId));
+		}
+
+		Device device = storager.queryVideoDevice(deviceId);
+		cmder.openCameraVoice(device,channelId);
+		DeferredResult<ResponseEntity<RecordInfo>> result = new DeferredResult<ResponseEntity<RecordInfo>>();
+		// 录像查询以channelId作为deviceId查询
+		String uuid = UUID.randomUUID().toString();
+		resultHolder.put(DeferredResultHolder.CALLBACK_CMD_RECORDINFO+channelId,uuid, result);
+		return result;
+	}
+
+	@GetMapping("/openCameraVoiceResult/{deviceId}/{channelId}")
+	public DeferredResult<ResponseEntity<RecordInfo>> openCameraVoiceResult(@PathVariable String deviceId,@PathVariable String channelId){
+
+		if (logger.isDebugEnabled()) {
+			logger.debug(String.format("打开摄像头语音 API调用，deviceId：%s ",deviceId));
+		}
+
+		Device device = storager.queryVideoDevice(deviceId);
+		cmder.openCameraVoiceResult(device);
+		DeferredResult<ResponseEntity<RecordInfo>> result = new DeferredResult<ResponseEntity<RecordInfo>>();
+		// 录像查询以channelId作为deviceId查询
+		String uuid = UUID.randomUUID().toString();
+		resultHolder.put(DeferredResultHolder.CALLBACK_CMD_RECORDINFO+channelId,uuid, result);
+		return result;
+	}
+
+	@GetMapping("/openCameraVoiceFlow/{deviceId}/{channelId}")
+	private void sendData(byte[] r, int h264len)throws IOException {
+
+	}
 }
 

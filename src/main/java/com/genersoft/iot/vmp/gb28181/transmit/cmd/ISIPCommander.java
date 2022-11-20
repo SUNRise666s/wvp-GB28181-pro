@@ -366,4 +366,12 @@ public interface ISIPCommander {
 	void transmitRequest(String transport, Request request, SipSubscribe.Event errorEvent) throws SipException, ParseException;
 
 	void transmitRequest(String transport, Request request, SipSubscribe.Event errorEvent , SipSubscribe.Event okEvent) throws SipException, ParseException;
+
+	/**
+	 * 开启语音通道
+	 * @param device
+	 * @return
+	 */
+	boolean openCameraVoice(Device device,String channelId);
+	boolean openCameraVoiceResult(Device device);
 }

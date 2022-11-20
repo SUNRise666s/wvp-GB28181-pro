@@ -660,8 +660,8 @@ public class SIPCommander implements ISIPCommander {
         broadcastXml.append("<Notify>\r\n");
         broadcastXml.append("<CmdType>Broadcast</CmdType>\r\n");
         broadcastXml.append("<SN>" + (int) ((Math.random() * 9 + 1) * 100000) + "</SN>\r\n");
-        broadcastXml.append("<SourceID>" + sipConfig.getId() + "</SourceID>\r\n");
-        broadcastXml.append("<TargetID>" + device.getDeviceId() + "</TargetID>\r\n");
+        broadcastXml.append("<SourceID>" + device.getDeviceId() + "</SourceID>\r\n");
+        broadcastXml.append("<TargetID>" + "34020000001370000001"  + "</TargetID>\r\n");
         broadcastXml.append("</Notify>\r\n");
 
         CallIdHeader callIdHeader = device.getTransport().equals("TCP") ? tcpSipProvider.getNewCallId()
@@ -671,6 +671,52 @@ public class SIPCommander implements ISIPCommander {
         transmitRequest(device.getTransport(), request, errorEvent);
 
     }
+
+    @Override
+    public boolean openCameraVoice(Device device,String channelId) {
+        try {
+            StringBuffer catalogXml = new StringBuffer(400);
+            catalogXml.append("<?xml version=\"1.0\"?>\r\n");
+            catalogXml.append("<Notify>\r\n");
+            catalogXml.append("<CmdType>Broadcast</CmdType>\r\n");
+            catalogXml.append("<SN>" + (int)((Math.random()*9+1)*100000) + "</SN>\r\n");
+            catalogXml.append("<SourceID>" + device.getDeviceId() + "</SourceID>\r\n");
+            catalogXml.append("<TargetID>" + channelId + "</TargetID>\r\n");
+            catalogXml.append("</Notify>\r\n");
+            CallIdHeader callIdHeader = device.getTransport().equals("TCP") ? tcpSipProvider.getNewCallId()
+                    : udpSipProvider.getNewCallId();
+            Request request = headerProvider.createMessageRequest(device, catalogXml.toString(), SipUtils.getNewViaTag(), SipUtils.getNewFromTag(), null, callIdHeader);
+            transmitRequest(device.getTransport(), request, null);
+        } catch (SipException | ParseException | InvalidArgumentException e) {
+            e.printStackTrace();
+            return false;
+        }
+        return true;
+    }
+
+    @Override
+    public boolean openCameraVoiceResult(Device device) {
+        try {
+            StringBuffer catalogXml = new StringBuffer(400);
+            catalogXml.append("<?xml version=\"1.0\" encoding=\"GB2312\"?>\r\n");
+            catalogXml.append("<Response>\r\n");
+            catalogXml.append("<CmdType>Broadcast</CmdType>\r\n");
+            catalogXml.append("<SN>" + "172986" + "</SN>\r\n");
+            catalogXml.append("<DeviceID>" + device.getDeviceId() + "</DeviceID>\r\n");
+            catalogXml.append("<Result>" + "OK" + "</Result>\r\n");
+            catalogXml.append("</Response>\r\n");
+            CallIdHeader callIdHeader = device.getTransport().equals("TCP") ? tcpSipProvider.getNewCallId()
+                    : udpSipProvider.getNewCallId();
+            Request request = headerProvider.createMessageRequest(device, catalogXml.toString(), "ViaRecordInfoBranch", "FromRecordInfoTag", null,callIdHeader);
+            transmitRequest(device.getTransport(), request, null);
+        } catch (SipException | ParseException | InvalidArgumentException e) {
+            e.printStackTrace();
+            return false;
+        }
+        return true;
+    }
+
+
 
 
     /**
